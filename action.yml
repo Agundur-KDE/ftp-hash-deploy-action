@@ -1,0 +1,59 @@
+name: 'FTP Hash Deploy'
+description: 'Deploy only changed files via FTP/FTPS using server-side Git-style hashing — no state files, no guesswork.'
+author: 'Agundur-KDE'
+
+branding:
+  icon: 'upload-cloud'
+  color: 'green'
+
+inputs:
+  ftp-host:
+    description: 'FTP server hostname'
+    required: true
+  ftp-user:
+    description: 'FTP username'
+    required: true
+  ftp-password:
+    description: 'FTP password'
+    required: true
+  ftp-port:
+    description: 'FTP port'
+    required: false
+    default: '21'
+  ftps:
+    description: 'Use FTPS explicit TLS (true) or plain FTP (false)'
+    required: false
+    default: 'true'
+  local-dir:
+    description: 'Local directory to deploy (trailing slash required)'
+    required: false
+    default: './'
+  server-dir:
+    description: 'Server directory — FTP path (trailing slash required)'
+    required: false
+    default: '/'
+  site-url:
+    description: 'Public URL of the site (used to fetch server hashes via hashme.php)'
+    required: true
+  dry-run:
+    description: 'Show diff without uploading anything'
+    required: false
+    default: 'false'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Deploy via FTP with server-side hash diff'
+      shell: bash
+      env:
+        FTP_HOST:     ${{ inputs.ftp-host }}
+        FTP_USER:     ${{ inputs.ftp-user }}
+        FTP_PASSWORD: ${{ inputs.ftp-password }}
+        FTP_PORT:     ${{ inputs.ftp-port }}
+        FTP_TLS:      ${{ inputs.ftps }}
+        LOCAL_DIR:    ${{ inputs.local-dir }}
+        SERVER_DIR:   ${{ inputs.server-dir }}
+        SITE_URL:     ${{ inputs.site-url }}
+        DRY_RUN:      ${{ inputs.dry-run }}
+        ACTION_PATH:  ${{ github.action_path }}
+      run: python3 "${{ github.action_path }}/deploy.py"
