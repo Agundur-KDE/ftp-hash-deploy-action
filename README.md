@@ -1,5 +1,7 @@
 # FTP Hash Deploy Action
 
+[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-FTP%20Hash%20Deploy-blue?logo=github)](https://github.com/marketplace/actions/ftp-hash-deploy)
+
 > Deploy only changed files via FTP/FTPS — using server-side **Git-style hashing**.
 
 No state files. No timestamp guesswork. The server tells you what it has. You upload only what changed.
