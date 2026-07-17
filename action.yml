@@ -3,7 +3,7 @@ description: 'Deploy only changed files via FTP/FTPS using server-side Git-style
 author: 'Agundur-KDE'
 
 branding:
-  icon: 'upload-cloud'
+  icon: 'hash'
   color: 'green'
 
 inputs:

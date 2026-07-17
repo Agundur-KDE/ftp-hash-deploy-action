@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="assets/logo.png" width="120" alt="FTP Hash Deploy Action logo">
+</div>
+
 # FTP Hash Deploy Action
 
 [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-FTP%20Hash%20Deploy-blue?logo=github)](https://github.com/marketplace/actions/ftp-hash-deploy)
