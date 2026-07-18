@@ -4,7 +4,7 @@ author: 'Agundur-KDE'
 
 branding:
   icon: 'hash'
-  color: 'green'
+  color: 'red'
 
 inputs:
   ftp-host:
