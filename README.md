@@ -20,6 +20,10 @@ No state files. No timestamp guesswork. The server tells you what it has. You up
 
 The hash algorithm is identical to Git's own object hashing. If a file has the same Git blob hash on server and locally, it is bit-for-bit identical and won't be re-uploaded.
 
+## No state file, ever
+
+There's nothing to lose, corrupt, or let go stale — every deploy asks the server directly what it already has, via the same hash Git uses for its own objects. Delete everything, rerun on a fresh CI runner, doesn't matter: the result is always correct, because the server's own files are the only source of truth.
+
 ## Usage
 
 ```yaml
@@ -61,20 +65,23 @@ The FTP account root (`/`) is usually not the web root. Set `server-dir` to wher
 
 When in doubt: log in via FTP and look for the directory that contains your `index.html`.
 
+## Troubleshooting
+
+**Connection timeout / connection refused / "control socket" errors**
+
+- Uses **passive FTP mode by default** (Python's `ftplib` default) — this already avoids most firewall issues, since it doesn't require the server to open an inbound connection back to the runner.
+- The connection timeout is currently fixed at 30 seconds, not user-configurable.
+- If your host requires **implicit** FTPS (typically port 990) instead of **explicit** FTPS (port 21, what this action uses), the connection will fail — check with your host which one they expect.
+- If your host doesn't support FTPS at all, set `ftps: false` to fall back to plain FTP.
+- **IP allowlisting**: GitHub-hosted runners use a large, changing range of IP addresses. If your FTP server restricts access to specific IPs, deploys from GitHub Actions will be blocked regardless of correct credentials — you'll need a self-hosted runner or to open the firewall for GitHub's published IP ranges.
+
+**Before debugging further:** run with `dry-run: true` first. It connects, authenticates, and computes the full diff without transferring anything — most config problems (wrong port, wrong `server-dir`, bad credentials) show up here without any risk to your live site.
+
 ## Requirements
 
 - Server must run **PHP** (for `hashme.php`)
 - FTP or FTPS access
 - Public HTTP access to the site URL during deploy
-
-## vs. SamKirkland/FTP-Deploy-Action
-
-| | FTP-Deploy-Action | ftp-hash-deploy-action |
-|---|---|---|
-| Change detection | Local state file | Server-side hash query |
-| Hash algorithm | — | Git blob SHA1 |
-| State drift | Possible (state file ≠ server) | Impossible (server is the source of truth) |
-| PHP required | No | Yes |
 
 Inspired by [SamKirkland/FTP-Deploy-Action](https://github.com/SamKirkland/FTP-Deploy-Action) (MIT).
 
